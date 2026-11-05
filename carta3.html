@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Para Ivannnn</title>
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    /* ... TU CSS EXACTO SE MANTIENE INTACTO AQUÍ ... */
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html { scrollbar-width: none; -ms-overflow-style: none; }
+    html::-webkit-scrollbar { display: none; }
+    body {
+        /* ... lo que ya tienes ... */
+        transition: opacity 0.4s ease;
+    }
+
+    body.fade-out {
+        opacity: 0;
+    }
+    body {
+        margin: 0; background-image: url('IMG/fondo3.gif'); background-size: cover;
+        background-position: center; background-repeat: no-repeat; background-attachment: fixed;
+        display: flex; flex-direction: column; align-items: center; justify-content: flex-start; 
+        min-height: 100vh; min-height: 100dvh; overflow-y: auto; overflow-x: hidden;
+        font-family: 'VT323', monospace; padding: 15px;
+        scrollbar-width: none; -ms-overflow-style: none; 
+    }
+    body::-webkit-scrollbar { display: none; }
+    .banner {
+        position: absolute; top: 0; left: 0; width: 100%; height: 280px; z-index: 1;
+        background-size: cover; background-position: center; background-image: url('IMG/banner3.gif');
+        box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+    }
+    .banner { z-index: 0; }
+    .contenedor {
+        position: relative; z-index: 2; width: 100%; max-width: 650px; background-color: #890c0c;
+        padding: 0 0 40px 0; display: flex; flex-direction: column; align-items: center;
+        margin-top: 150px; min-height: 400px;
+    }
+    .collage {
+        position: relative; width: 100%; height: 220px; margin-top: -110px; margin-bottom: 30px;
+        display: flex; justify-content: center; align-items: center;
+    }
+    .foto { position: absolute; border: 5px solid #fff; background-color: #fff; }
+    .foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .foto-central { width: 210px; height: 210px; transform: rotate(-4deg); z-index: 3; }
+    .foto-izq { width: 140px; height: 160px; transform: rotate(-15deg) translateX(-105px) translateY(10px); z-index: 2; }
+    .foto-der { width: 140px; height: 160px; transform: rotate(12deg) translateX(105px) translateY(15px); z-index: 1; }
+    .titulo-cancion { color: #ffffff; font-size: 2.5rem; margin: 0; letter-spacing: 2px; text-align: center; }
+    .contenedor-separador { width: 100%; display: flex; justify-content: center; margin-bottom: 15px; margin-top: 20px; flex-shrink: 0; padding: 0 15px; }
+    .separador { width: 100%; height: 100px; display: block; object-fit: cover; object-position: center; }
+    .caja-reproduccion {
+        width: 85%; max-width: 320px; background: rgba(0, 0, 0, 0.548); border-radius: 12px;
+        padding: 15px; margin-bottom: 25px; display: flex; flex-direction: column; align-items: center;
+        backdrop-filter: blur(8px); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.362);
+    }
+    .portada {
+        width: 120px; height: 120px; margin-bottom: 12px; background-color: #333;
+        background-image: url('Canciones/portada_cancion3.jpg'); background-size: cover;
+        background-position: center; box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+    }
+    .info-cancion { text-align: center; margin-bottom: 12px; color: #fff; }
+    .info-cancion h3 { margin: 0; font-size: 1.5rem; font-weight: normal; color: #ffbb00; }
+    .info-cancion p { margin: 3px 0 0 0; font-size: 1rem; color: #ccc; }
+    .progreso-contenedor { width: 100%; display: flex; align-items: center; gap: 8px; color: #fff; font-size: 0.9rem; margin-bottom: 12px; }
+    .barra-fondo { flex-grow: 1; height: 6px; background-color: #444; border-radius: 4px; cursor: pointer; position: relative; overflow: hidden; }
+    .barra-relleno { height: 100%; width: 0%; background-color: #ffbb00; border-radius: 4px; transition: width 0.1s linear; }
+    .controles-reproductor { display: flex; align-items: center; gap: 15px; }
+    .btn-control { background: none; border: none; color: #fff; font-size: 1.3rem; cursor: pointer; transition: color 0.2s; }
+    .btn-control:hover { color: #ffbb00ad; }
+    .btn-play-grande {
+        background-color: #fff; color: #000; border: none; width: 45px; height: 45px; border-radius: 50%;
+        display: flex; justify-content: center; align-items: center; font-size: 1.3rem; cursor: pointer; transition: transform 0.2s;
+    }
+    .btn-play-grande:hover { transform: scale(1.1); }
+    .caja-texto {
+        width: 85%; max-width: 320px; background: rgba(2, 2, 2, 0.311); padding: 20px;
+        margin-bottom: 0; backdrop-filter: blur(8px); color: #e0e0e0; font-size: 1.2rem; line-height: 1.5; text-align: center;
+    }
+    .imagen-inferior {
+        width: 85%; max-width: 320px; margin-bottom: 30px; display: block;
+        border-radius: 0 0 12px 12px; overflow: hidden;
+    }
+    .imagen-inferior img { width: 100%; height: auto; display: block; }
+    @media (max-width: 600px) {
+        .banner { height: 160px; }
+        .contenedor { margin-top: 100px; width: calc(100% - 30px); }
+        .collage { height: 170px; margin-top: -90px; margin-bottom: 15px; }
+        .foto-central { width: 160px; height: 160px; }
+        .foto-izq { width: 100px; height: 120px; transform: rotate(-15deg) translateX(-80px) translateY(10px); }
+        .foto-der { width: 100px; height: 120px; transform: rotate(12deg) translateX(80px) translateY(15px); }
+        .titulo-cancion { font-size: 2rem; }
+        .contenedor-separador { padding: 0 10px; }
+        .separador { height: 70px; }
+        .caja-reproduccion { padding: 15px; width: 90%; max-width: 300px; margin-bottom: 20px; }
+        .portada { width: 100px; height: 100px; }
+        .info-cancion h3 { font-size: 1.4rem; }
+        .info-cancion p { font-size: 0.95rem; }
+        .caja-texto { font-size: 1.1rem; width: 90%; max-width: 300px; }
+        .imagen-inferior { width: 90%; max-width: 300px; }
+    }
+
+    /* --- BOTÓN --- */
+    .boton-retro {
+        display: block;
+        margin: 0 auto; 
+        background-color: #000;
+        color: #fff;
+        font-family: 'VT323', monospace;
+        font-size: 24px;
+        padding: 10px 30px;
+        border: 3px solid #fff; 
+        cursor: pointer;
+        transition: all 0.1s ease; 
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .boton-retro:hover, .boton-retro:active {
+        color: #ffff00;
+        border-color: #ffff00;
+        outline: none;
+    }
+
+    .letra-cursiva {
+        font-style: italic;
+    }
+</style>
+</head>
+<body>
+    <div class="banner"></div>
+    
+    <!-- AQUÍ ESTÁ EL CAMBIO: Le sumamos 100px al margin-top del contenedor (de 150px a 250px) -->
+    <div class="contenedor" style="margin-top: 250px;">
+        
+        <!-- Y aquí ajustamos el margen negativo del collage para que las fotos sigan sobresaliendo bien -->
+        <div class="collage" style="margin-top: -140px;">
+            <div class="foto foto-izq">
+                <img src="IMG/foto-izquierda3.jpg" alt="Foto Izquierda">
+            </div>
+            
+            <div class="foto foto-central">
+                <img src="IMG/foto-principal3.gif" alt="Foto Principal">
+            </div>
+
+            <div class="foto foto-der">
+                <img src="IMG/foto-derecha3.jpg" alt="Foto Derecha">
+            </div>
+        </div>
+
+        <h1 class="titulo-cancion">Cancion N°3</h1>
+
+        <div class="contenedor-separador">
+            <img src="IMG/separador3.gif" alt="Separador" class="separador">
+        </div>
+
+        <div class="caja-reproduccion">
+            <div class="portada"></div>
+
+            <div class="info-cancion">
+                <h3>Like You Do</h3>
+                <p>Joji</p>
+            </div>
+
+            <div class="progreso-contenedor">
+                <span id="tiempo-actual">0:00</span>
+                <div class="barra-fondo" onclick="saltar(event)">
+                    <div class="barra-relleno" id="barra-relleno"></div>
+                </div>
+                <span id="tiempo-total">0:00</span>
+            </div>
+
+            <div class="controles-reproductor">
+                <button class="btn-control"><i class="fas fa-backward"></i></button>
+                <button class="btn-play-grande" id="btn-play" onclick="togglePlay()"><i class="fas fa-play"></i></button>
+                <button class="btn-control"><i class="fas fa-forward"></i></button>
+            </div>
+
+            <audio id="musica" src="Canciones/Cancion3.mp3" loop></audio>
+        </div>
+
+        <!-- CAJA DE TEXTO 1 -->
+        <div class="caja-texto">
+            <p>
+                Like you Do de Joji habla de alguien que, de un tiempo a otro, no puede dejar de pensar en si lo que tienen, terminará y cada uno tomará un rumbo distinto. 
+                <br> <br> "Lately, I can't help but think"
+                <br> <br> "That our roads might take us down different phases"
+                <br>
+                <br>
+                No quiere estorbar ni complicar lo bonito que llevan, pero no le sale decir nada, se queda sin palabras. Irónico a mi situación, a veces siento que te molesto, a veces siento que soy pesada o intensa y no quiero que eso arruine lo que hemos armado, con tiempo, cuando más me conoces mas sabes de mi. Me da miedo en un futuro que lo nuestro no sea eterno, pero constantemente te diré que por ahora no pienso soltarte, hasta que tú lo hagas primero, yo estaré ahí.
+                <br> <br> "Don't wanna complicate the rhythm that we've got"
+            </p>
+        </div>
+
+        <!-- IMAGEN 1: Unida al texto de arriba (quitamos el margin-bottom y el border-radius inferior) -->
+        <div class="imagen-inferior" style="margin-bottom: 0; border-radius: 0;">
+            <img src="IMG/img3.jpg" alt="Imagen decorativa 1">
+        </div>
+
+        <!-- CAJA DE TEXTO 2: Unida a la imagen de arriba (quitamos el margin-top y el border-radius superior) -->
+        <div class="caja-texto" style="margin-top: 0; background: rgba(2, 2, 2, 0.311);">
+            <p>
+                La canción también toca el tema de ese alguien que le aterra la idea de que esa persona se vaya, porque entonces hasta las canciones que más les gustaban se volverían algo agridulce, temo también con aquella idea sabes? Porque nadie me ha querido como lo has hecho tú, nadie me hace sentir esas cosas que antes me parecían tan especiales y que ahora entiendo que sin ti no son nada. 
+                <br> <br> "Lost in the blue"
+                <br> <br> "They don't love me like you do"
+                <br> <br> Desde que te conocí, hasta los días más grises parecen de alguna forma los más brillantes ahora, y por eso valoro mucho lo que tenemos. Puede parecer corto pero esta canción más que nada la puse en la playlist por aquello mismo, el coro. Nadie me ha querido antes como lo estás haciendo tú conmigo, paciencia.
+                <br> <br> "Since I met you"
+                <br> <br> "All the gloomy days just seem to shine a little more brightly"
+            </p>
+        </div>
+
+        <div style="position: relative; width: 100%; height: 250px; margin-top: 40px; display: flex; justify-content: center;">
+            
+            <!-- Foto Polaroid 1 (Izquierda) -->
+            <div style="position: absolute; width: 140px; height: 170px; background-color: #fdfdfd; padding: 8px 8px 30px 8px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); transform: rotate(-12deg) translateX(-70px); z-index: 1;">
+                <!-- Aquí puedes poner la ruta de tu imagen. Dejé un cuadro negro por si no hay imagen -->
+                <div style="width: 100%; height: 100%; background-color: #111; background-image: url('IMG/pfp3-1.jpg'); background-size: cover; background-position: center;"></div>
+            </div>
+
+            <!-- Foto Polaroid 2 (Derecha) -->
+            <div style="position: absolute; width: 140px; height: 170px; background-color: #fdfdfd; padding: 8px 8px 30px 8px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); transform: rotate(15deg) translateX(70px); z-index: 2;">
+                 <!-- Aquí puedes poner la ruta de tu imagen -->
+                <div style="width: 100%; height: 100%; background-color: #111; background-image: url('IMG/pfp3-2.jpg'); background-size: cover; background-position: center;"></div>
+            </div>
+
+        </div>
+
+        <div class="caja-texto" style="margin-top: 0; background: rgba(2, 2, 2, 0.311);">
+            <p>
+                No quiero parecer un tonto
+                <br>⸻
+                <br> "I don't wanna seem foolish"
+                <br>
+                <br>
+                •| ⊱✿⊰ |•
+                <br>
+                <br>
+                Cuando me estoy ilusionando con esto
+                <br>⸻
+                <br> "When I'm jumping into this"
+                <br> 
+                <br>
+                ♥
+                <br>
+                <br>
+                Eres todo lo que veo
+                <br>⸻
+                <br> "You're all that I see"
+        </div>
+
+        <div class="contenedor-separador" style="width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 10px;
+        margin-top: 5px; 
+        flex-shrink: 0;">
+            <img src="item-1.png" alt="Separador" class="separador" style="width: 100px;
+        height: auto; 
+        display: block;">
+        </div>
+
+        <button class="boton-retro" id="btnComenzar" onclick="continuar('carta4.html')">Continuar Recorrido</button>
+        <audio id="sonidoClick" src="click.mp3"></audio>
+
+    </div>
+    <script>
+        /* ... TU SCRIPT EXACTO SE MANTIENE INTACTO AQUÍ ... */
+        const audio = document.getElementById('musica');
+        const btnPlay = document.getElementById('btn-play');
+        const barraRelleno = document.getElementById('barra-relleno');
+        const barraFondo = document.querySelector('.barra-fondo');
+        const tiempoActual = document.getElementById('tiempo-actual');
+        const tiempoTotal = document.getElementById('tiempo-total');
+
+        function togglePlay() {
+            if (audio.paused) {
+                audio.play();
+                btnPlay.innerHTML = '<i class="fas fa-pause"></i>'; 
+            } else {
+                audio.pause();
+                btnPlay.innerHTML = '<i class="fas fa-play"></i>'; 
+            }
+        }
+
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return "0:00";
+            const min = Math.floor(seconds / 60);
+            const sec = Math.floor(seconds % 60);
+            return min + ":" + (sec < 10 ? "0" : "") + sec;
+        }
+
+        audio.addEventListener('loadedmetadata', () => {
+            tiempoTotal.textContent = formatTime(audio.duration);
+        });
+
+        audio.addEventListener('timeupdate', () => {
+            if (!isNaN(audio.duration)) {
+                const porcentaje = (audio.currentTime / audio.duration) * 100;
+                barraRelleno.style.width = porcentaje + '%';
+                tiempoActual.textContent = formatTime(audio.currentTime);
+            }
+        });
+
+        function saltar(e) {
+            const rect = barraFondo.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const nuevoTiempo = (clickX / barraFondo.offsetWidth) * audio.duration;
+            audio.currentTime = nuevoTiempo;
+        }
+
+        audio.addEventListener('ended', () => {
+            btnPlay.innerHTML = '<i class="fas fa-play"></i>';
+            barraRelleno.style.width = '0%';
+            tiempoActual.textContent = '0:00';
+        });
+        function continuar(siguientePagina) {
+            const sonido = document.getElementById('sonidoClick');
+            const audio = document.getElementById('musica');
+
+            // Pausar la música de fondo de esta página
+            if (audio) audio.pause();
+
+            // Reproducir el click y esperar a que termine
+            if (sonido) {
+                sonido.currentTime = 0;
+
+                // Cuando el sonido termine, redirigimos
+                sonido.onended = () => {
+                    window.location.href = siguientePagina;
+                };
+
+                // Reproducimos el sonido
+                const playPromise = sonido.play();
+
+                // Si el navegador bloquea el audio o falla, redirigimos igual tras un fallback
+                if (playPromise !== undefined) {
+                    playPromise.catch(() => {
+                        // Fallback: si no se puede reproducir, esperamos 300ms y redirigimos
+                        setTimeout(() => {
+                            window.location.href = siguientePagina;
+                        }, 300);
+                    });
+                }
+
+                // Seguridad extra: si por algún motivo onended no se dispara,
+                // forzamos la redirección después de 1.5 segundos como máximo
+                setTimeout(() => {
+                    window.location.href = siguientePagina;
+                }, 1500);
+
+            } else {
+                // Si no hay elemento de sonido, redirigimos directo
+                window.location.href = siguientePagina;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Para Ivannnn</title>
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    /* =========================================
+       ESTILOS DE LA INTRO (PANTALLA 1)
+       ========================================= */
+    * {
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+        margin: 0;
+        background-color: #000;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        height: 100dvh;
+        overflow: hidden;
+        font-family: 'VT323', monospace;
+        padding: 15px;
+    }
+
+    #start-screen {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-color: #000;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 200;
+        transition: opacity 0.8s ease;
+    }
+
+    .game-title {
+        font-family: 'VT323', monospace;
+        font-size: 70px;
+        color: #fff;
+        margin-bottom: 40px;
+        text-align: center;
+        line-height: 1;
+    }
+
+    .start-image {
+        width: 180px;
+        height: 180px;
+        background-color: #222;
+        margin-bottom: 40px;
+        background-image: url('start.gif');
+        background-size: cover;
+        background-position: center;
+    }
+
+    .start-btn {
+        font-family: 'VT323', monospace;
+        font-size: 40px;
+        color: #fff;
+        cursor: pointer;
+        padding: 10px 30px;
+        border: 2px solid #fff;
+        transition: all 0.2s ease;
+    }
+
+    .start-btn:hover, .start-btn:active {
+        color: #f7d059;
+        border-color: #f7d059;
+        transform: scale(1.1);
+    }
+
+    .main-container {
+        width: 100%;
+        max-width: 800px;
+        display: none; 
+        flex-direction: column;
+        align-items: center;
+        opacity: 1;
+    }
+
+    .dialog-box {
+        background-color: #000;
+        border: 3px solid #fff;
+        padding: 20px 25px;
+        width: 100%;
+        font-size: 32px;
+        line-height: 1.1;
+        min-height: 180px;
+        position: relative;
+        border-radius: 4px;
+        z-index: 2;
+        color: aliceblue;
+    }
+
+    @media (min-width: 600px) {
+        .dialog-box {
+            font-size: 38px;
+            padding: 30px 40px;
+            min-height: 200px;
+        }
+    }
+
+    #text {
+        display: block;
+        white-space: pre-wrap;
+    }
+
+    .continue-btn {
+        position: absolute;
+        bottom: 15px;
+        right: 20px;
+        width: 0;
+        height: 0;
+        border-left: 12px solid transparent;
+        border-right: 12px solid transparent;
+        border-top: 18px solid #fff;
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.2s;
+        animation: blink 1s infinite;
+        padding: 10px; 
+        margin: -10px; 
+    }
+
+    @keyframes blink {
+        0%, 100% { opacity: 0; }
+        50% { opacity: 1; }
+    }
+
+    .finished .continue-btn { opacity: 1; }
+    .typing .continue-btn { opacity: 0 !important; pointer-events: none; }
+
+    .video-wrapper {
+        width: 90%;
+        max-width: 350px;
+        margin-top: 20px;
+        display: none;           
+        flex-direction: column;
+        align-items: center;
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .video-wrapper.show {
+        display: flex;
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .video-container {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        overflow: hidden;
+        border: none;
+        padding: 0;
+    }
+
+    .video-container video {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+        object-position: center;
+        background-color: #000;
+    }
+
+    .retro-controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+        font-family: 'VT323', monospace;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .retro-btn {
+        background: #000;
+        color: #fff;
+        border: 2px solid #fff;
+        font-family: 'VT323', monospace;
+        font-size: 20px;
+        padding: 6px 14px;
+        cursor: pointer;
+    }
+
+    .retro-btn:hover { background: #fff; color: #000; }
+
+    .retro-seek {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 120px;
+        height: 6px;
+        background: #333;
+        border: 1px solid #fff;
+        outline: none;
+    }
+
+    .retro-seek::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 12px;
+        height: 16px;
+        background: #fff;
+        cursor: pointer;
+    }
+
+    .retro-seek::-moz-range-thumb {
+        width: 12px;
+        height: 16px;
+        background: #fff;
+        border: none;
+        cursor: pointer;
+    }
+
+    .retro-time { color: #fff; font-size: 18px; }
+
+    #loading-screen {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-color: #000;
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 100;
+        opacity: 0;
+        transition: opacity 0.3s steps(2, end);
+        font-family: 'VT323', monospace;
+        color: #fff;
+        background-image: repeating-linear-gradient(
+            0deg,
+            rgba(255,255,255,0.03) 0px,
+            rgba(255,255,255,0.03) 1px,
+            transparent 1px,
+            transparent 3px
+        );
+    }
+
+    .loading-text {
+        font-size: 32px;
+        letter-spacing: 2px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .loading-text::after {
+        content: '_';
+        animation: blink-cursor 0.6s steps(1) infinite;
+    }
+
+    @keyframes blink-cursor {
+        0%, 49% { opacity: 1; }
+        50%, 100% { opacity: 0; }
+    }
+
+    .loading-bar {
+        font-size: 28px;
+        letter-spacing: 4px;
+        color: #f7d059;
+        white-space: pre;
+    }
+
+    .loading-bar::before { content: '[          ]'; }
+
+    #loading-screen.loading-1 .loading-bar::before { content: '[##        ]'; }
+    #loading-screen.loading-2 .loading-bar::before { content: '[####      ]'; }
+    #loading-screen.loading-3 .loading-bar::before { content: '[######    ]'; }
+    #loading-screen.loading-4 .loading-bar::before { content: '[########  ]'; }
+    #loading-screen.loading-5 .loading-bar::before { content: '[##########]'; }
+
+    .loading-sub {
+        font-size: 18px;
+        color: #888;
+        margin-top: 20px;
+        letter-spacing: 1px;
+    }
+
+    /* =========================================
+       ESTILOS DE LA PLAYLIST (PANTALLA 2)
+       ========================================= */
+    #pantalla-canciones {
+        display: none; /* Oculto por defecto, se muestra al terminar la intro */
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-color: #000;
+        background-image: url('fondo_playlist.gif');
+        flex-direction: column;
+        align-items: center;
+        overflow: hidden;
+        z-index: 50;
+    }
+
+    .banner {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%;
+        height: 180px;
+        z-index: 0;
+        background-size: cover;
+        background-image: url('banner_playlist.gif');
+        box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+    }
+
+    .foto-polaroid {
+        position: absolute;
+        background-color: #fff;
+        padding: 8px 8px 25px 8px;
+        box-shadow: 3px 3px 10px rgba(0,0,0,0.6);
+        z-index: 10;
+        width: 140px; 
+        aspect-ratio: 1 / 1; 
+        transition: transform 0.3s ease;
+    }
+
+    .foto-polaroid img {
+        width: 100%; height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .foto-izq {
+        top: -20px;
+        left: calc(50% - 380px);
+        transform: rotate(-12deg);  
+    }
+
+    .foto-der {
+        top: 40px;
+        right: calc(50% - 380px); 
+        transform: rotate(8deg); 
+    }
+
+    .foto-izq:hover { transform: rotate(-8deg) scale(1.05); }
+    .foto-der:hover { transform: rotate(4deg) scale(1.05); }
+
+    .contenedor {
+        position: absolute; 
+        top: 180px; 
+        z-index: 2;
+        width: 100%;
+        max-width: 650px;
+        background-color: #8b0000; 
+        padding: 0; 
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 180px); 
+        height: calc(100dvh - 180px);
+        overflow-y: auto; 
+        scrollbar-width: none;
+    }
+    
+    .contenedor::-webkit-scrollbar { display: none; }
+
+    .bloque-playlist {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 20px; 
+        background: linear-gradient(to bottom, #b30000 0%, #3a0000 100%);
+        padding: 30px 25px; 
+        flex-shrink: 0; 
+    }
+
+    .foto-playlist {
+        width: 120px; height: 120px;
+        object-fit: cover;
+        border: 2px solid #000; 
+    }
+
+    .info-playlist {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        color: #fff;
+    }
+
+    .titulo-playlist {
+        font-size: 42px; 
+        margin: 0 0 10px 0;
+        line-height: 1;
+    }
+
+    .detalles-playlist {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 18px;
+        color: #ddd;
+    }
+
+    .icono-usuario {
+        width: 24px; height: 24px;
+        border-radius: 50%; 
+        object-fit: cover;
+    }
+
+    .bloque-lista {
+        width: calc(100% - 50px);
+        margin: 20px 25px 0 25px;
+        background-color: #0d0000; 
+        padding: 15px;
+        height: 350px; 
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: #b30000 #0d0000;
+        flex-shrink: 0;
+        border: 2px solid #1a0000;
+    }
+
+    .bloque-lista::-webkit-scrollbar { width: 14px; }
+    .bloque-lista::-webkit-scrollbar-track { background: #0d0000; border-left: 2px solid #1a0000; }
+    .bloque-lista::-webkit-scrollbar-thumb {
+        background-color: #b30000;
+        border: 2px solid #0d0000;
+        background-image: linear-gradient(45deg, rgba(0,0,0,0.2) 25%, transparent 25%, transparent 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2) 75%, transparent 75%, transparent);
+        background-size: 4px 4px; 
+    }
+
+    .cancion {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 12px;
+        color: #fff;
+        cursor: pointer;
+    }
+    
+    .cancion:last-child { margin-bottom: 0; }
+
+    .num-cancion {
+        width: 25px;
+        text-align: right;
+        font-size: 20px;
+        color: #888;
+    }
+
+    .img-cancion {
+        width: 45px; height: 45px;
+        object-fit: cover;
+    }
+
+    .info-cancion {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .titulo-cancion { font-size: 22px; line-height: 1; margin-bottom: 2px; }
+    .artista-cancion { font-size: 16px; color: #aaa; line-height: 1; }
+
+    .reproductor {
+        display: none; 
+        width: calc(100% - 50px);
+        margin: 20px 25px 0 25px;
+        background-color: #222222; 
+        border-radius: 10px; 
+        padding: 15px 20px;
+        flex-shrink: 0;
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .reproductor-contenido {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .portada-reproductor {
+        width: 90px; height: 90px;
+        object-fit: cover;
+        border: none;
+        background-color: #fff; 
+    }
+
+    .controles-reproductor {
+        flex-grow: 1; 
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        color: #fff;
+    }
+
+    .barra-progreso-contenedor {
+        width: 100%;
+        height: 4px;
+        background-color: #555;
+        border-radius: 2px;
+        margin-bottom: 5px;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .barra-progreso {
+        width: 0%;
+        height: 100%;
+        background-color: #1ed760;
+        border-radius: 2px;
+        position: relative;
+    }
+
+    .barra-progreso::after {
+        content: '';
+        position: absolute;
+        top: 50%; right: -4px;
+        transform: translateY(-50%);
+        width: 10px; height: 10px;
+        background-color: #1ed760;
+        border-radius: 50%;
+        opacity: 0;
+        transition: opacity 0.2s;
+    }
+    
+    .barra-progreso-contenedor:hover .barra-progreso::after { opacity: 1; }
+
+    .tiempos {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        color: #aaa;
+        margin-bottom: 10px;
+        font-family: sans-serif;
+    }
+
+    .botones-reproductor {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 40px;
+    }
+
+    .botones-reproductor button {
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 20px;
+        cursor: pointer;
+        transition: color 0.2s, transform 0.1s;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .botones-reproductor button:hover { color: #169643; }
+    .botones-reproductor button:active { transform: scale(0.9); }
+    .boton-play { font-size: 36px !important; }
+
+    .contenedor-separador {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 15px;
+        margin-top: 20px; 
+        flex-shrink: 0;
+    }
+
+    .separador { width: 60px; height: auto; display: block; }
+
+    .bloque-titulo {
+        background-color: #1a0000; 
+        display: flex;
+        align-items: center; 
+        justify-content: space-between;
+        height: 90px; 
+        margin: 0 25px; 
+        width: calc(100% - 50px); 
+        flex-shrink: 0; 
+    }
+
+    .bloque-titulo img {
+        width: 90px; height: 100%; 
+        object-fit: cover; 
+        display: block; 
+        margin: 0; padding: 0;
+    }
+
+    .titulo-texto {
+        text-align: center;
+        flex-grow: 1; 
+        color: #fff; 
+        font-size: 26px;
+        line-height: 1.2;
+    }
+
+    .bloque-cuerpo {
+        width: calc(100% - 50px); 
+        margin: 0 25px; 
+        background-color: #3a0000; 
+        padding: 20px;
+        margin-bottom: 30px; 
+        flex-shrink: 0;
+    }
+
+    .texto-parrafo {
+        color: #fff;
+        font-size: 18px; 
+        line-height: 1.3;
+        text-align: justify; 
+        margin: 0;
+        margin-bottom: 20px; 
+    }
+
+    .boton-retro {
+        display: block;
+        margin: 0 auto; 
+        background-color: #000;
+        color: #fff;
+        font-family: 'VT323', monospace;
+        font-size: 24px;
+        padding: 10px 30px;
+        border: 3px solid #fff; 
+        cursor: pointer;
+        transition: all 0.1s ease; 
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .boton-retro:hover, .boton-retro:active {
+        color: #ffff00;
+        border-color: #ffff00;
+        outline: none;
+    }
+
+    @media (max-width: 600px) {
+        .banner { height: 120px; }
+
+        .contenedor {
+            top: 120px;
+            height: calc(100vh - 120px); 
+            height: calc(100dvh - 120px);
+            width: calc(100% - 30px);
+        }
+
+        .foto-polaroid {
+            width: 90px; 
+            padding: 5px 5px 15px 5px; 
+        }
+        .foto-izq { top: 10px; left: 5px; }
+        .foto-der { top: 90px; right: 5px; }
+
+        .bloque-playlist {
+            padding: 15px;
+            gap: 10px;
+            flex-direction: column; 
+            text-align: center;
+        }
+        .foto-playlist { width: 160px; height: 160px; }
+        .titulo-playlist { font-size: 24px; }
+        .detalles-playlist { font-size: 14px; justify-content: center; }
+
+        .bloque-lista {
+            margin: 15px 15px 0 15px;
+            width: calc(100% - 30px);
+            height: 400px; 
+            padding: 10px;
+        }
+        .cancion { gap: 10px; }
+        .img-cancion { width: 35px; height: 35px; }
+        .titulo-cancion { font-size: 18px; }
+        .artista-cancion { font-size: 14px; }
+
+        .reproductor {
+            width: calc(100% - 30px);
+            margin: 15px 15px 0 15px;
+            padding: 15px;
+        }
+        .portada-reproductor { width: 110px; height: 110px; }
+        .botones-reproductor { gap: 30px; }
+        .boton-play { font-size: 34px !important; }
+
+        .bloque-titulo, .bloque-cuerpo { margin: 0 15px; width: calc(100% - 30px); }
+        .titulo-texto { font-size: 20px; }
+        .texto-parrafo { font-size: 16px; }
+        .separador { width: 80px; }
+    }
+    /* =========================================
+   PANTALLA DE CARGA (OVERLAY 3s)
+   ========================================= */
+#cassette-screen {
+    position: fixed;
+    inset: 0;
+    background-color: #000;
+    background-image: repeating-linear-gradient(
+        0deg,
+        rgba(255,255,255,0.03) 0px,
+        rgba(255,255,255,0.03) 1px,
+        transparent 1px,
+        transparent 3px
+    );
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 500;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    font-family: 'VT323', monospace;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+#cassette-screen.show {
+    display: flex;
+    opacity: 1;
+}
+
+#cassette-screen.closing {
+    opacity: 0;
+}
+
+.cassette-gif {
+    width: 200px;
+    height: 200px;
+    max-width: 60vw;
+    max-height: 60vw;
+    background-image: url('cassete.gif');  /* <-- tu GIF aquí */
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin-bottom: 25px;
+}
+
+.cassette-text {
+    font-size: 34px;
+    letter-spacing: 4px;
+    color: #f7d059;
+}
+.cassette-text::after {
+    content: '_';
+    animation: blink-cursor 0.6s steps(1) infinite;
+}
+
+@media (max-width: 600px) {
+    .cassette-gif { width: 150px; height: 150px; }
+    .cassette-text { font-size: 26px; }
+}
+</style>
+</head>
+<body>
+    <!-- AUDIOS GLOBALES -->
+    <audio id="typeSound" src="voz.mp3" preload="auto"></audio>
+    <audio id="clickSfx" src="click.mp3" preload="auto"></audio>
+    <audio id="videoSfx" src="whoosh.mp3" preload="auto"></audio>
+    <audio id="sonidoClick" src="click.mp3"></audio>
+    <audio id="reproductorAudio"></audio>
+    <!-- Música de Fondo -->
+    <audio id="musicaFondo" src="Canciones/CancionInicio.mp3" loop></audio>
+
+    <!-- =========================================
+         PANTALLA 1: INTRO (DIÁLOGOS)
+         ========================================= -->
+    <div id="start-screen">
+        <div class="game-title">Our Frequency</div>
+        <div class="start-image"></div>
+        <div class="start-btn" onclick="startGame()">START</div>
+    </div>
+
+    <div class="main-container" id="main-container">
+        <div class="dialog-box" id="dialog-box">
+            <span id="text"></span>
+            <div class="continue-btn" id="continue-btn" onclick="nextDialog()"></div>
+        </div>
+        
+        <div class="video-wrapper" id="video-wrapper">
+            <div class="video-container" id="video-container">
+                <video id="myVideo" playsinline preload="metadata">
+                    <source src="Inicio.mp4" type="video/mp4">
+                </video>
+            </div>
+
+            <div class="retro-controls" id="retro-controls">
+                <button class="retro-btn" id="playBtn" onclick="togglePlay()">▶ PLAY</button>
+                <button class="retro-btn" onclick="restartVideo()">↺ REW</button>
+                <input type="range" id="seekBar" class="retro-seek" min="0" max="100" value="0" step="0.1">
+                <span id="timeDisplay" class="retro-time">00:00 / 00:00</span>
+            </div>
+        </div>
+    </div>
+
+        <div id="loading-screen">
+        <div class="loading-text">CARGANDO</div>
+        <div class="loading-bar"></div>
+        <div class="loading-sub" id="loading-sub">> Iniciando...</div>
+        
+        <!-- NUEVA PREGUNTA INTERACTIVA -->
+        <div id="pregunta-container" style="display: none; text-align: center; margin-top: 30px; z-index: 10; position: relative;">
+            <div id="pregunta-texto" style="font-size: 28px; color: #fff; margin-bottom: 20px; letter-spacing: 1px;"></div>
+            <div id="botones-pregunta" style="display: flex; gap: 20px; justify-content: center;">
+                <button class="retro-btn" id="btn-si" onclick="respuestaSi()">SÍ</button>
+                <button class="retro-btn" id="btn-no" onclick="respuestaNo()">NO</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================
+         PANTALLA 2: PLAYLIST (INYECTADA)
+         ========================================= -->
+    <div id="pantalla-canciones">
+        <div class="banner"></div>
+
+        <div class="contenedor">
+            <div class="foto-polaroid foto-izq">
+                <img src="1.gif" alt="Recuerdo Izquierda">
+            </div>
+            <div class="foto-polaroid foto-der">
+                <img src="2.gif" alt="Recuerdo Derecha">
+            </div>
+            <div class="bloque-playlist">
+                <img src="portada_playlist.png" alt="Foto de perfil" class="foto-playlist">
+                <div class="info-playlist">
+                    <h1 class="titulo-playlist">₊˚. Our Frequency .˚₊ :: ♫</h1>
+                    <div class="detalles-playlist">
+                        <img src="pfp.jpg" alt="Icono" class="icono-usuario">
+                        <span>Para Ivannnn • 16 canciones, 59 min 50 s</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- REPRODUCTOR -->
+            <div class="reproductor" id="miReproductor">
+                <div class="reproductor-contenido">
+                    <img src="" alt="Portada" class="portada-reproductor" id="imgReproductor">
+                    
+                    <div class="controles-reproductor">
+                        <div class="barra-progreso-contenedor" id="barraContenedor">
+                            <div class="barra-progreso" id="barraProgreso"></div>
+                        </div>
+                        <div class="tiempos">
+                            <span id="tiempoActual">00:00</span>
+                            <span id="tiempoTotal">00:00</span>
+                        </div>
+                        <div class="botones-reproductor">
+                            <button id="btnAtras"><i class="fas fa-backward"></i></button>
+                            <button class="boton-play" id="btnPlayPausa"><i class="fas fa-play-circle"></i></button>
+                            <button id="btnAdelante"><i class="fas fa-forward"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LISTA DE CANCIONES -->
+            <div class="bloque-lista">
+                <!-- Canción 1 -->
+                <div class="cancion" onclick="reproducirCancion('Canciones/1.gif', 'Canciones/Cancion1.mp3')">
+                    <div class="num-cancion">1</div>
+                    <img src="Canciones/portada_cancion1.jpg" alt="Portada" class="img-cancion">
+                    <div class="info-cancion">
+                        <div class="titulo-cancion">A Piece of You</div>
+                        <div class="artista-cancion">Nathaniel Constantin</div>
+                    </div>
+                </div>
+                <!-- Canción 2 -->
+                <div class="cancion" onclick="reproducirCancion('Canciones/2.gif', 'Canciones/Cancion2.mp3')">
+                    <div class="num-cancion">2</div>
+                    <img src="Canciones/portada_cancion2.jpg" alt="Portada" class="img-cancion">
+                    <div class="info-cancion">
+                        <div class="titulo-cancion">Sparks</div>
+                        <div class="artista-cancion">Coldplay</div>
+                    </div>
+                </div>
+                <!-- Canción 3 -->
+                <div class="cancion" onclick="reproducirCancion('Canciones/3.gif', 'Canciones/Cancion3.mp3')">
+                    <div class="num-cancion">3</div>
+                    <img src="Canciones/portada_cancion3.jpg" alt="Portada" class="img-cancion">
+                    <div class="info-cancion">
+                        <div class="titulo-cancion">w</div>
+                        <div class="artista-cancion">Joji</div>
+                    </div>
+                </div>
+                <!-- Canción 4 -->
+                <div class="cancion" onclick="reproducirCancion('Canciones/4.gif', 'Canciones/Cancion4.mp3')">
+                    <div class="num-cancion">4</div>
+                    <img src="Canciones/portada_cancion4.jpg" alt="Portada" class="img-cancion">
+                    <div class="info-cancion">
+                        <div class="titulo-cancion">love.</div>
+                        <div class="artista-cancion">wave to earth</div>
+                    </div>
+                </div>
+                <!-- Canción 5 -->
+                <div class="cancion" onclick="reproducirCancion('Canciones/5.gif', 'Canciones/Cancion5.mp3')">
+                    <div class="num-cancion">5</div>
+                    <img src="Canciones/portada_cancion5.jpg" alt="Portada" class="img-cancion">
+                    <div class="info-cancion">
+                        <div class="titulo-cancion">On Melancholy Hill</div>
+                        <div class="artista-cancion">Gorillaz</div>
+                    </div>
+                </div>
+                <!-- Canción 6 -->
+                <div class="cancion" onclick="reproducirCancion('Canciones/6.gif', 'Canciones/Cancion6.mp3')">
+                    <div class="num-cancion">6</div>
+                    <img src="Canciones/portada_cancion6.jpg" alt="Portada" class="img-cancion">
+                    <div class="info-cancion">
+                        <div class="titulo-cancion">Stress Relief</div>
+                        <div class="artista-cancion">late night drive home</div>
+                    </div>
+                </div>
+                <!-- Canción 7 -->
+                <div class="cancion" onclick="reproducirCancion('Canciones/7.gif', 'Canciones/Cancion7.mp3')">
+                    <div class="num-cancion">7</div>
+                    <img src="Canciones/portada_cancion7.jpg" alt="Portada" class="img-cancion">
+                    <div class="info-cancion">
+                        <div class="titulo-cancion">No. 1 Party Anthem</div>
+                        <div class="artista-cancion">Arctic Monkeys</div>
+                    </div>
+                </div>
+                <!-- Canción 8 -->
+                <div class="cancion" onclick="reproducirCancion('Canciones/8.gif', 'Canciones/Cancion8.mp3')">
+                    <div class="num-cancion">8</div>
+                    <img src="Canciones/portada_cancion8.jpg" alt="Portada" class="img-cancion">
+                    <div class="info-cancion">
+                        <div class="titulo-cancion">Meteora</div>
+                        <div class="artista-cancion">Esperón</div>
+                    </div>
+                </div>
+                <!-- Canción 9 -->
+                <div class="cancion" onclick="reproducirCancion('Canciones/9.gif', 'Canciones/Cancion9.mp3')">
+                    <div class="num-cancion">9</div>
+                    <img src="Canciones/portada_cancion9.jpg" alt="Portada" class="img-cancion">
+                    <div class="info-cancion">
+                        <div class="titulo-cancion">Amor, Amor de Mis Amores</div>
+                        <div class="artista-cancion">Natalia Lafourcade, Devendra Banhart</div>
+                    </div>
+                </div>
+                <!-- Canción 10 -->
+                <div class="cancion" onclick="reproducirCancion('Canciones/10.gif', 'Canciones/Cancion10.mp3')">
+                    <div class="num-cancion">10</div>
+                    <img src="Canciones/portada_cancion10.jpg" alt="Portada" class="img-cancion">
+                    <div class="info-cancion">
+                        <div class="titulo-cancion">Brillas</div>
+                        <div class="artista-cancion">León Larregui</div>
+                    </div>
+                </div>
+                <!-- Canción 11 -->
+                <div class="cancion" onclick="reproducirCancion('Canciones/11.gif', 'Canciones/Cancion11.mp3')">
+                    <div class="num-cancion">11</div>
+                    <img src="Canciones/portada_cancion11.jpg" alt="Portada" class="img-cancion">
+                    <div class="info-cancion">
+                        <div class="titulo-cancion">Luna - En Vivo</div>
+                        <div class="artista-cancion">Zoé</div>
+                    </div>
+                </div>
+                <!-- Canción 12 -->
+                <div class="cancion" onclick="reproducirCancion('Canciones/12.gif', 'Canciones/Cancion12.mp3')">
+                    <div class="num-cancion">12</div>
+                    <img src="Canciones/portada_cancion11.jpg" alt="Portada" class="img-cancion">
+                    <div class="info-cancion">
+                        <div class="titulo-cancion">Vía Láctea - En Vivo</div>
+                        <div class="artista-cancion">Zoé</div>
+                    </div>
+                </div>
+                <!-- Canción 13 -->
+                <div class="cancion" onclick="reproducirCancion('Canciones/13.gif', 'Canciones/Cancion13.mp3')">
+                    <div class="num-cancion">13</div>
+                    <img src="Canciones/portada_cancion13.jpg" alt="Portada" class="img-cancion">
+                    <div class="info-cancion">
+                        <div class="titulo-cancion">M.A.I</div>
+                        <div class="artista-cancion">Milo j</div>
+                    </div>
+                </div>
+                <!-- Canción 14 -->
+                <div class="cancion" onclick="reproducirCancion('Canciones/14.gif', 'Canciones/Cancion14.mp3')">
+                    <div class="num-cancion">14</div>
+                    <img src="Canciones/portada_cancion14.jpg" alt="Portada" class="img-cancion">
+                    <div class="info-cancion">
+                        <div class="titulo-cancion">Love Like You</div>
+                        <div class="artista-cancion">Steven Universe, Rebecca Sugar</div>
+                    </div>
+                </div>
+                <!-- Canción 15 -->
+                <div class="cancion" onclick="reproducirCancion('Canciones/15.gif', 'Canciones/Cancion15.mp3')">
+                    <div class="num-cancion">15</div>
+                    <img src="Canciones/portada_cancion15.jpg" alt="Portada" class="img-cancion">
+                    <div class="info-cancion">
+                        <div class="titulo-cancion">My Kind of Woman</div>
+                        <div class="artista-cancion">Mac DeMarco</div>
+                    </div>
+                </div>
+                <!-- Canción 16 -->
+                <div class="cancion" onclick="reproducirCancion('Canciones/16.gif', 'Canciones/Cancion16.mp3')">
+                    <div class="num-cancion">16</div>
+                    <img src="Canciones/portada_cancion16.jpg" alt="Portada" class="img-cancion">
+                    <div class="info-cancion">
+                        <div class="titulo-cancion">Lovers Rock</div>
+                        <div class="artista-cancion">TV Girl</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contenedor-separador">
+                <img src="separador.png" alt="Separador" class="separador">
+            </div>
+
+            <div class="bloque-titulo">
+                <img src="1.jpeg" alt="Nyxen">
+                <div class="titulo-texto">
+                    ❀° ┄───────╮<br>
+                    Our Frequency <br>
+                    ╰──────┄ °❀
+                </div>
+                <img src="2.jpeg" alt="Ivaoe">
+            </div>
+
+            <div class="bloque-cuerpo">
+                <p class="texto-parrafo">
+                    Our Frequency, en español “Nuestra Frecuencia”. ¿Por qué elegí este nombre? Si te cuento la verdad, es que surgió solo, sin pensarlo mucho pero.. si lo pienso bien, buscaba algo con un significado bonito de recordar siempre. Porque no se trata de cualquiera se trata de vos. Así que este nombre que le puse a la playlist tiene todo el sentido del mundo para mi. Es nuestra Frecuencia! La frecuencia es la cantidad de veces que mi corazon late mas fuerte en cuanto largas tus lindos comentarios que aun me cuesta devolver, en el tiempo que pasa desde que te vas hasta que vuelves a hablarme ya sea por ocupaciones o distracciones. Es en cuantas veces apareces en mi cabeza, cada día, tantas que diría que ya hasta perdí la cuenta. Y tú, tú estás siempre, sin fin. Por eso elegí ese nombre! ya que es nuestra frecuencia lo que nos llevó hasta donde estamos, una que no se puede copiar a la de otros, una que solo es nuestra y única a su forma.
+                </p>
+
+                <button class="boton-retro" id="btnComenzar">Comenzar Recorrido</button>
+            </div>
+        </div>
+    </div>
+    <div id="cassette-screen">
+        <div class="cassette-gif"></div>
+        <div class="cassette-text">CARGANDO</div>
+        <audio id="cassetteAudio" src="cassete.mp3" preload="auto"></audio>
+    </div>
+    <script>
+        // =========================================
+        // LÓGICA DE LA INTRO
+        // =========================================
+        const scriptTexts = [
+            "OLAOLAOLAOLAOLALALA IVANNN ♡",
+            "¿Cómo estassss??",
+            "Listo para la sorpresaaaa???",
+            "Aunque bueno a este punto no es sorpresa..",
+            "Pero es un regaloo!!",
+            "Que espero que te guste mucho ♡",
+            "Antes de comenzarrrrr",
+            "Un videito que te armee, sii?? [VIDEO]", 
+            "Allii lo tienessss", 
+            "¿¿Cómo estuvo??",
+            "Fue mucho??",
+            "Bueno y eso solo es el inicio del comienzo.",
+            "TE AMOOOOUUU ♡"
+        ];
+
+        let currentIndex = 0;
+        let charIndex = 0;
+        let isTyping = false;
+        let typingTimeout;
+
+        const startScreen = document.getElementById('start-screen'); 
+        const textElement = document.getElementById('text');
+        const dialogBox = document.getElementById('dialog-box');
+        const mainContainer = document.getElementById('main-container');
+        const videoContainer = document.getElementById('video-container');
+        const myVideo = document.getElementById('myVideo');
+        const typeSound = document.getElementById('typeSound');
+        const videoWrapper = document.getElementById('video-wrapper');
+        const loadingScreen = document.getElementById('loading-screen');
+        const pantallaCanciones = document.getElementById('pantalla-canciones');
+        const clickSfx = document.getElementById('clickSfx');
+        const videoSfx = document.getElementById('videoSfx');
+
+        // Música de fondo (solo sonará desde la playlist en adelante o al dar click en START)
+        const musicaFondo = document.getElementById('musicaFondo');
+        musicaFondo.volume = 0.3;
+
+        if (typeSound) {
+            typeSound.volume = 0.2; 
+        }
+
+        // --- INICIO DE LA EXPERIENCIA ---
+        function startGame() {
+            playSfx(clickSfx, 0.4);
+
+            startScreen.style.opacity = '0';
+            
+            setTimeout(() => {
+                startScreen.style.display = 'none';
+                mainContainer.style.display = 'flex';
+                setTimeout(() => {
+                    startTyping();
+                }, 500);
+            }, 800);
+        }
+
+        function startTyping() {
+            isTyping = true;
+            dialogBox.classList.add('typing');
+            dialogBox.classList.remove('finished');
+            textElement.innerHTML = "";
+            charIndex = 0;
+
+            let currentText = scriptTexts[currentIndex];
+
+            if (!currentText.includes("[VIDEO]")) {
+                if (videoWrapper.classList.contains('show')) {
+                    playSfx(videoSfx, 0.35);
+                }
+                videoWrapper.classList.remove('show');
+                setTimeout(() => {
+                    videoWrapper.style.display = 'none';
+                }, 500);
+                if (myVideo) myVideo.pause();
+            }
+
+            currentText = currentText.replace("[VIDEO]", "");
+
+            function type() {
+                if (charIndex < currentText.length) {
+                    if (currentText.charAt(charIndex) === '\n') {
+                        textElement.innerHTML += '<br>';
+                    } else {
+                        textElement.innerHTML += currentText.charAt(charIndex);
+                        if (charIndex % 2 === 0 && currentText.charAt(charIndex) !== ' ') {
+                            playSound();
+                        }
+                    }
+                    charIndex++;
+                    typingTimeout = setTimeout(type, 45);
+                } else {
+                    isTyping = false;
+                    dialogBox.classList.remove('typing');
+                    dialogBox.classList.add('finished');
+
+                    if (scriptTexts[currentIndex].includes("[VIDEO]")) {
+                        videoWrapper.style.display = 'flex';
+                        setTimeout(() => {
+                            playSfx(videoSfx, 0.35);
+                            videoWrapper.classList.add('show');
+                        }, 10);
+                    }
+                }
+            }
+            type();
+        }
+
+        let soundTimer;
+
+        function playSound() {
+            if (typeSound) {
+                clearTimeout(soundTimer);
+                typeSound.currentTime = 0;
+                typeSound.volume = 0.15;
+                typeSound.play().catch(e => console.log("Audio bloqueado"));
+
+                soundTimer = setTimeout(() => {
+                    typeSound.pause();
+                    typeSound.currentTime = 0;
+                }, 60);                             
+            }
+        }
+
+        function playSfx(audioEl, volume = 0.3) {
+            if (!audioEl) return;
+            audioEl.volume = volume;
+            if (audioEl.ended || audioEl.currentTime > 0) {
+                audioEl.currentTime = 0;
+            }
+            audioEl.play().catch(e => console.log("SFX bloqueado"));
+        }
+
+        function nextDialog() {
+            if (isTyping) {
+                clearTimeout(typingTimeout);
+                let fullText = scriptTexts[currentIndex].replace("[VIDEO]", "").replace(/\n/g, '<br>');
+                textElement.innerHTML = fullText;
+                isTyping = false;
+                dialogBox.classList.remove('typing');
+                dialogBox.classList.add('finished');
+                
+                if (scriptTexts[currentIndex].includes("[VIDEO]")) {
+                    videoWrapper.style.display = 'flex';
+                    setTimeout(() => {
+                        videoWrapper.classList.add('show');
+                    }, 10);
+                }
+                return;
+            } if (currentIndex < scriptTexts.length - 1) {
+                playSfx(clickSfx, 0.25);
+                currentIndex++;
+                startTyping();
+                        } else {
+                playSfx(clickSfx, 0.3);
+
+                musicaFondo.play().catch(e => console.log("Audio bloqueado"));
+
+                mainContainer.style.transition = 'none';
+                mainContainer.style.opacity = '0';
+                mainContainer.style.display = 'none';
+
+                // Mostrar pantalla de carga
+                const loadingSub = document.getElementById('loading-sub');
+                const messages = [
+                    '> inicializando frecuencia...',
+                    '> cargando playlist...',
+                    '> conectando...',
+                    '> listo ♡'
+                ];
+                loadingScreen.className = '';
+                loadingScreen.style.display = 'flex';
+                requestAnimationFrame(() => { loadingScreen.style.opacity = '1'; });
+                
+                // Ocultamos la pregunta al inicio
+                document.getElementById('pregunta-container').style.display = 'none';
+
+                let step = 0;
+                const totalSteps = 5;
+                const seq = setInterval(() => {
+                    step++;
+                    loadingScreen.classList.remove('loading-1','loading-2','loading-3','loading-4','loading-5');
+                    if (step <= totalSteps) {
+                        loadingScreen.classList.add('loading-' + step);
+                        loadingSub.textContent = messages[Math.min(Math.floor(step/2), messages.length-1)];
+                    }
+                    
+                    // Al terminar la carga, mostramos la pregunta en vez de redirigir
+                    if (step >= totalSteps) {
+                        clearInterval(seq);
+                        setTimeout(() => {
+                            document.querySelector('.loading-text').style.display = 'none';
+                            document.querySelector('.loading-bar').style.display = 'none';
+                            loadingSub.style.display = 'none';
+                            
+                            const preguntaDiv = document.getElementById('pregunta-container');
+                            const preguntaTexto = document.getElementById('pregunta-texto');
+                            preguntaDiv.style.display = 'block';
+                            preguntaTexto.innerHTML = '¿Me amas?';
+                            
+                            // Guardamos el estado de la pregunta en una variable global
+                            window.preguntaEstado = 0; 
+                        }, 500);
+                    }
+                }, 400);
+            }
+        }
+        
+                // --- LÓGICA DE LA PREGUNTA "¿ME AMAS?" ---
+        function respuestaSi() {
+            playSfx(clickSfx, 0.4);
+            const preguntaTexto = document.getElementById('pregunta-texto');
+            const botones = document.getElementById('botones-pregunta');
+            
+            if (window.preguntaEstado === 0) {
+                // Primera vez que dice Sí -> Comienza la música y lanza los mensajes finales
+                musicaFondo.play().catch(e => console.log("Audio bloqueado"));
+                
+                botones.style.display = 'none';
+                preguntaTexto.innerHTML = '¡También te amo!<br><br>¡Mucho! Mucho!';
+                
+                setTimeout(() => {
+                    // Terminamos la carga y pasamos a la playlist
+                    const loadingScreen = document.getElementById('loading-screen');
+                    const pantallaCanciones = document.getElementById('pantalla-canciones');
+                    
+                    loadingScreen.style.opacity = '0';
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                        
+                        // Restaurar los elementos de la pantalla de carga para que no se vean mal si se recarga
+                        document.querySelector('.loading-text').style.display = 'block';
+                        document.querySelector('.loading-bar').style.display = 'block';
+                        document.getElementById('loading-sub').style.display = 'block';
+                        
+                        // MOSTRAR LA PLAYLIST
+                        pantallaCanciones.style.display = 'flex';
+                        pantallaCanciones.style.opacity = '0';
+                        requestAnimationFrame(() => {
+                            pantallaCanciones.style.transition = 'opacity 0.3s steps(2, end)';
+                            pantallaCanciones.style.opacity = '1';
+                        });
+                    }, 300);
+                }, 3000); // 3 segundos para leer el mensaje
+            } else {
+                // Si ya había dicho que no, ahora sí acepta
+                window.preguntaEstado = 0; // Reseteamos por si acaso
+                botones.style.display = 'none';
+                musicaFondo.play().catch(e => console.log("Audio bloqueado"));
+                
+                preguntaTexto.innerHTML = '¡También te amo!<br><br>¡Mucho! Mucho!';
+                setTimeout(() => {
+                    const loadingScreen = document.getElementById('loading-screen');
+                    const pantallaCanciones = document.getElementById('pantalla-canciones');
+                    loadingScreen.style.opacity = '0';
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                        document.querySelector('.loading-text').style.display = 'block';
+                        document.querySelector('.loading-bar').style.display = 'block';
+                        document.getElementById('loading-sub').style.display = 'block';
+                        
+                        pantallaCanciones.style.display = 'flex';
+                        pantallaCanciones.style.opacity = '0';
+                        requestAnimationFrame(() => {
+                            pantallaCanciones.style.transition = 'opacity 0.3s steps(2, end)';
+                            pantallaCanciones.style.opacity = '1';
+                        });
+                    }, 300);
+                }, 3000);
+            }
+        }
+
+        function respuestaNo() {
+            playSfx(clickSfx, 0.3);
+            const preguntaTexto = document.getElementById('pregunta-texto');
+            const btnSi = document.getElementById('btn-si');
+            const btnNo = document.getElementById('btn-no');
+            
+            if (window.preguntaEstado === 0) {
+                window.preguntaEstado = 1; // Marcamos que ya dijo NO
+                
+                preguntaTexto.innerHTML = '¿No me amas?<br><br>Una pena, yo sí! Ahora aprieta el botón de sí!';
+                
+                // Hacemos que el botón de "No" desaparezca o se desactive
+                btnNo.style.display = 'none'; 
+                btnSi.style.transform = 'scale(1.2)'; // Hacemos el Sí más grande
+            }
+        }
+
+
+        // CONTROLES DEL VIDEO
+        const playBtn = document.getElementById('playBtn');
+        const seekBar = document.getElementById('seekBar');
+        const timeDisplay = document.getElementById('timeDisplay');
+
+        function togglePlay() {
+            playSfx(clickSfx, 0.3);
+            if (myVideo.paused) {
+                myVideo.play();
+                playBtn.textContent = '❚❚ PAUSE';
+            } else {
+                myVideo.pause();
+                playBtn.textContent = '▶ PLAY';
+            }
+        }
+
+        function restartVideo() {
+            playSfx(clickSfx, 0.3);
+            myVideo.currentTime = 0;
+            myVideo.play();
+            playBtn.textContent = '❚❚ PAUSE';
+        }
+
+        seekBar.addEventListener('change', () => {
+            playSfx(clickSfx, 0.2);
+        });
+
+        function formatTime(s) {
+            if (!isFinite(s)) return '00:00';
+            const m = Math.floor(s / 60);
+            const sec = Math.floor(s % 60);
+            return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+        }
+
+        myVideo.addEventListener('timeupdate', () => {
+            if (myVideo.duration) {
+                seekBar.value = (myVideo.currentTime / myVideo.duration) * 100;
+                timeDisplay.textContent = `${formatTime(myVideo.currentTime)} / ${formatTime(myVideo.duration)}`;
+            }
+        });
+
+        seekBar.addEventListener('input', () => {
+            if (myVideo.duration) {
+                myVideo.currentTime = (seekBar.value / 100) * myVideo.duration;
+            }
+        });
+
+        myVideo.addEventListener('play',  () => playBtn.textContent = '❚❚ PAUSE');
+        myVideo.addEventListener('pause', () => playBtn.textContent = '▶ PLAY');
+        myVideo.addEventListener('ended', () => playBtn.textContent = '▶ PLAY');
+
+        // =========================================
+        // LÓGICA DEL REPRODUCTOR Y PLAYLIST
+        // =========================================
+
+        const reproductor = document.getElementById('miReproductor');
+        const imgReproductor = document.getElementById('imgReproductor');
+        const audio = document.getElementById('reproductorAudio');
+        
+        const btnPlayPausa = document.getElementById('btnPlayPausa');
+        const btnAtras = document.getElementById('btnAtras');
+        const btnAdelante = document.getElementById('btnAdelante');
+        
+        const barraProgreso = document.getElementById('barraProgreso');
+        const barraContenedor = document.getElementById('barraContenedor');
+        const tiempoActual = document.getElementById('tiempoActual');
+        const tiempoTotal = document.getElementById('tiempoTotal');
+
+        const listaCanciones = [
+            { gif: 'Canciones/1.gif', audio: 'Canciones/Cancion1.mp3' },
+            { gif: 'Canciones/2.gif', audio: 'Canciones/Cancion2.mp3' },
+            { gif: 'Canciones/3.gif', audio: 'Canciones/Cancion3.mp3' },
+            { gif: 'Canciones/4.gif', audio: 'Canciones/Cancion4.mp3' },
+            { gif: 'Canciones/5.gif', audio: 'Canciones/Cancion5.mp3' },
+            { gif: 'Canciones/6.gif', audio: 'Canciones/Cancion6.mp3' },
+            { gif: 'Canciones/7.gif', audio: 'Canciones/Cancion7.mp3' },
+            { gif: 'Canciones/8.gif', audio: 'Canciones/Cancion8.mp3' },
+            { gif: 'Canciones/9.gif', audio: 'Canciones/Cancion9.mp3' },
+            { gif: 'Canciones/10.gif', audio: 'Canciones/Cancion10.mp3' },
+            { gif: 'Canciones/11.gif', audio: 'Canciones/Cancion11.mp3' },
+            { gif: 'Canciones/12.gif', audio: 'Canciones/Cancion12.mp3' },
+            { gif: 'Canciones/13.gif', audio: 'Canciones/Cancion13.mp3' },
+            { gif: 'Canciones/14.gif', audio: 'Canciones/Cancion14.mp3' },
+            { gif: 'Canciones/15.gif', audio: 'Canciones/Cancion15.mp3' },
+            { gif: 'Canciones/16.gif', audio: 'Canciones/Cancion16.mp3' }
+        ];
+
+        let indiceActual = 0;
+
+        function formatTimeReproductor(seconds) {
+            if (isNaN(seconds)) return "00:00";
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function reproducirCancion(rutaGif, archivoAudio, index = null) {
+            // PAUSAR LA MÚSICA DE FONDO AL REPRODUCIR UNA CANCIÓN
+            musicaFondo.pause();
+
+            reproductor.style.display = 'block';
+            imgReproductor.src = rutaGif;
+            
+            audio.src = archivoAudio;
+            audio.play();
+            
+            btnPlayPausa.innerHTML = '<i class="fas fa-pause-circle"></i>';
+            
+            if (index !== null) {
+                indiceActual = index;
+            } else {
+                indiceActual = listaCanciones.findIndex(c => c.audio === archivoAudio);
+            }
+            
+            reproductor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        btnPlayPausa.addEventListener('click', () => {
+            if (audio.paused) {
+                audio.play();
+                musicaFondo.pause(); // Asegurarnos de que el fondo siga pausado al reproducir
+                btnPlayPausa.innerHTML = '<i class="fas fa-pause-circle"></i>';
+            } else {
+                audio.pause();
+                btnPlayPausa.innerHTML = '<i class="fas fa-play-circle"></i>';
+                
+                // REANUDAR LA MÚSICA DE FONDO AL PAUSAR LA CANCIÓN
+                musicaFondo.play().catch(e => console.log("No se pudo reanudar la música de fondo"));
+            }
+        });
+
+        btnAdelante.addEventListener('click', () => {
+            indiceActual++;
+            if (indiceActual >= listaCanciones.length) {
+                indiceActual = 0;
+            }
+            const c = listaCanciones[indiceActual];
+            reproducirCancion(c.gif, c.audio, indiceActual);
+        });
+
+        btnAtras.addEventListener('click', () => {
+            indiceActual--;
+            if (indiceActual < 0) {
+                indiceActual = listaCanciones.length - 1;
+            }
+            const c = listaCanciones[indiceActual];
+            reproducirCancion(c.gif, c.audio, indiceActual);
+        });
+
+        audio.addEventListener('timeupdate', () => {
+            const porcentaje = (audio.currentTime / audio.duration) * 100;
+            barraProgreso.style.width = porcentaje + '%';
+            tiempoActual.textContent = formatTimeReproductor(audio.currentTime);
+            
+            if (!isNaN(audio.duration)) {
+                tiempoTotal.textContent = formatTimeReproductor(audio.duration);
+            }
+        });
+
+        audio.addEventListener('ended', () => {
+            btnAdelante.click(); 
+        });
+
+        barraContenedor.addEventListener('click', (e) => {
+            const rect = barraContenedor.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const anchoTotal = rect.width;
+            const porcentaje = clickX / anchoTotal;
+            
+            if (audio.duration) {
+                audio.currentTime = porcentaje * audio.duration;
+            }
+        });
+
+        // =========================================
+        // BOTÓN "COMENZAR RECORRIDO" + PANTALLA DE CARGA (3s)
+        // =========================================
+        const boton = document.getElementById('btnComenzar');
+        const audioClick = document.getElementById('sonidoClick');
+
+        const cassetteScreen = document.getElementById('cassette-screen');
+        const cassetteAudio  = document.getElementById('cassetteAudio');
+        let cassetteActivo = false;
+
+        boton.addEventListener('click', function () {
+            // Sonido del click
+            try {
+                audioClick.currentTime = 0;
+                audioClick.play().catch(() => {});
+            } catch (e) {}
+
+            // Pequeño delay para que el click se escuche antes de pausar la música
+            setTimeout(iniciarCassette, 120);
+        });
+
+        function iniciarCassette() {
+            if (cassetteActivo) return;
+            cassetteActivo = true;
+
+            // Pausar música de fondo mientras dura la carga
+            try { musicaFondo.pause(); } catch (e) {}
+
+            // Mostrar overlay
+            cassetteScreen.style.display = 'flex';
+            requestAnimationFrame(() => cassetteScreen.classList.add('show'));
+
+            // Reproducir el efecto de audio (si falla, igual dura 3s)
+            try {
+                cassetteAudio.currentTime = 0;
+                cassetteAudio.play().catch(() => {});
+            } catch (e) {}
+
+            // Duración fija: 3 segundos
+            setTimeout(finalizarCassette, 3000);
+        }
+
+        function finalizarCassette() {
+            if (!cassetteActivo) return;
+
+            cassetteScreen.classList.add('closing');
+
+            setTimeout(() => {
+                cassetteScreen.classList.remove('show', 'closing');
+                cassetteScreen.style.display = 'none';
+                cassetteActivo = false;
+
+                // === REDIRIGIR A LA PÁGINA DE LA CANCIÓN N°1 ===
+                // Cambia "cancion1.html" por el nombre real de tu segundo archivo
+                window.location.href = 'carta1.html';
+            }, 450);
+        }
+    </script>
+</body>
+</html>
